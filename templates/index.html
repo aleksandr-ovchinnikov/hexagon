@@ -41,9 +41,9 @@
                     <thead>
                         <tr onclick="showChart('Город1')">
                             <th>Город</th>
-                            <th>Температура</th>
+                            <th>Температура С</th>
                             <th>Погода</th>
-                            <th>Ветер</th>
+                            <th>Ветер км/ч</th>
                             <th>Последнее обновление</th>
                         </tr>
                     </thead>
@@ -201,8 +201,8 @@
             var temperatureData = chartData.map(entry => entry.temperature);
             var windSpeedData = chartData.map(entry => entry.wind_speed);
 
-            var temperatureMin = Math.min(...temperatureData) - 5; 
-            var temperatureMax = Math.max(...temperatureData) + 5; 
+            var temperatureMin = Math.min(...temperatureData) - 2; 
+            var temperatureMax = Math.max(...temperatureData) + 2; 
             var windSpeedMin = Math.min(...windSpeedData) - 2; 
             var windSpeedMax = Math.max(...windSpeedData) + 2;
 

@@ -90,7 +90,7 @@ def delete_city(*, session: Session = Depends(get_session), city: str):
 @router.get(
     "/all",
     name="Получить последнюю погоду по всем городам",
-    description="Получить последнюю погоду по всем городам и загрузить в БД",
+    description="Получить последнюю погоду по всем городам",
 )
 def get_all_weather(*, session: Session = Depends(get_session)):
     try:
@@ -122,7 +122,42 @@ def get_all_weather(*, session: Session = Depends(get_session)):
             status_code=status.HTTP_200_OK,
         )
     except Exception as e:
-        logger.error(f"An error occurred whil getting weather data from DB: {e}")
+        logger.error(f"An error occurred while getting weather data from DB: {e}")
+        return JSONResponse(
+            jsonable_encoder({"status": "error", "text": e}),
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@router.get(
+    "/weather/city",
+    name="Получить последнюю погоду по конкретному городу",
+    description="Получить последнюю погоду по всем конкретному городу",
+)
+def get_all_weather(*, session: Session = Depends(get_session), city: str):
+    try:
+        # init
+        output = []
+
+        sql_query = text(
+            f"""
+            SELECT weatherhistory.temperature, weatherhistory.wind_speed
+            FROM weatherhistory
+            WHERE city = '{city}' 
+            AND date_trunc('day', date_and_time) = current_date
+            ORDER BY date_and_time ASC;
+            """
+        )
+
+        result = session.execute(sql_query)
+        output = result.fetchall()
+
+        return JSONResponse(
+            jsonable_encoder({"status": "done", "data": output}),
+            status_code=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        logger.error(f"An error occurred while getting weather data from DB: {e}")
         return JSONResponse(
             jsonable_encoder({"status": "error", "text": e}),
             status_code=status.HTTP_400_BAD_REQUEST,

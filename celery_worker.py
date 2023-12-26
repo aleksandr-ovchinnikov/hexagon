@@ -19,7 +19,7 @@ celery.conf.timezone = "Europe/Moscow"
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, *args, **kwargs):
-    sender.add_periodic_task(crontab(minute="*/5"), upload_weather.s())
+    sender.add_periodic_task(crontab(minute="*/1"), upload_weather.s())
 
 
 @celery.task
